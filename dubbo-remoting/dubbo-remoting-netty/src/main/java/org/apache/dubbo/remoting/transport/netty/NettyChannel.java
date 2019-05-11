@@ -38,7 +38,7 @@ final class NettyChannel extends AbstractChannel {
 
     private static final Logger logger = LoggerFactory.getLogger(NettyChannel.class);
 
-    private static final ConcurrentMap<org.jboss.netty.channel.Channel, NettyChannel> channelMap = new ConcurrentHashMap<org.jboss.netty.channel.Channel, NettyChannel>();
+    private static final ConcurrentMap<org.jboss.netty.channel.Channel, NettyChannel> CHANNEL_MAP = new ConcurrentHashMap<org.jboss.netty.channel.Channel, NettyChannel>();
 
     private final org.jboss.netty.channel.Channel channel;
 
@@ -56,11 +56,11 @@ final class NettyChannel extends AbstractChannel {
         if (ch == null) {
             return null;
         }
-        NettyChannel ret = channelMap.get(ch);
+        NettyChannel ret = CHANNEL_MAP.get(ch);
         if (ret == null) {
             NettyChannel nc = new NettyChannel(ch, url, handler);
             if (ch.isConnected()) {
-                ret = channelMap.putIfAbsent(ch, nc);
+                ret = CHANNEL_MAP.putIfAbsent(ch, nc);
             }
             if (ret == null) {
                 ret = nc;
@@ -71,7 +71,7 @@ final class NettyChannel extends AbstractChannel {
 
     static void removeChannelIfDisconnected(org.jboss.netty.channel.Channel ch) {
         if (ch != null && !ch.isConnected()) {
-            channelMap.remove(ch);
+            CHANNEL_MAP.remove(ch);
         }
     }
 
@@ -177,13 +177,23 @@ final class NettyChannel extends AbstractChannel {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
         NettyChannel other = (NettyChannel) obj;
         if (channel == null) {
-            if (other.channel != null) return false;
-        } else if (!channel.equals(other.channel)) return false;
+            if (other.channel != null) {
+                return false;
+            }
+        } else if (!channel.equals(other.channel)) {
+            return false;
+        }
         return true;
     }
 

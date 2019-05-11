@@ -79,9 +79,9 @@ public @interface Service {
     boolean deprecated() default false;
 
     /**
-     * Whether the service is dynamic, default value is false
+     * Whether the service is dynamic, default value is true
      */
-    boolean dynamic() default false;
+    boolean dynamic() default true;
 
     /**
      * Access log for the service, default value is ""
@@ -263,4 +263,15 @@ public @interface Service {
      * Registry spring bean name
      */
     String[] registry() default {};
+
+    /**
+     * Service tag name
+     */
+    String tag() default "";
+
+    /**
+     * methods support
+     * @return
+     */
+    Method[] methods() default {};
 }

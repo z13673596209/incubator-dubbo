@@ -18,6 +18,7 @@ package org.apache.dubbo.rpc.support;
 
 import org.apache.dubbo.common.Constants;
 import org.apache.dubbo.common.URL;
+import org.apache.dubbo.common.utils.StringUtils;
 
 public class ProtocolUtils {
 
@@ -31,7 +32,7 @@ public class ProtocolUtils {
 
     public static String serviceKey(int port, String serviceName, String serviceVersion, String serviceGroup) {
         StringBuilder buf = new StringBuilder();
-        if (serviceGroup != null && serviceGroup.length() > 0) {
+        if (StringUtils.isNotEmpty(serviceGroup)) {
             buf.append(serviceGroup);
             buf.append("/");
         }
@@ -50,7 +51,8 @@ public class ProtocolUtils {
                 && !"".equals(generic)
                 && (Constants.GENERIC_SERIALIZATION_DEFAULT.equalsIgnoreCase(generic)  /* Normal generalization cal */
                 || Constants.GENERIC_SERIALIZATION_NATIVE_JAVA.equalsIgnoreCase(generic) /* Streaming generalization call supporting jdk serialization */
-                || Constants.GENERIC_SERIALIZATION_BEAN.equalsIgnoreCase(generic));
+                || Constants.GENERIC_SERIALIZATION_BEAN.equalsIgnoreCase(generic)
+                || Constants.GENERIC_SERIALIZATION_PROTOBUF.equalsIgnoreCase(generic));
     }
 
     public static boolean isDefaultGenericSerialization(String generic) {
@@ -65,5 +67,9 @@ public class ProtocolUtils {
 
     public static boolean isBeanGenericSerialization(String generic) {
         return isGeneric(generic) && Constants.GENERIC_SERIALIZATION_BEAN.equals(generic);
+    }
+
+    public static boolean isProtobufGenericSerialization(String generic) {
+        return isGeneric(generic) && Constants.GENERIC_SERIALIZATION_PROTOBUF.equals(generic);
     }
 }
